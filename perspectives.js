@@ -9,12 +9,6 @@ const assertArray = (arr, methodName) => {
   }
 };
 
-const losesContext = methodName => {
-  throw TypeError(
-    `Perspective.prototype.${methodName} is not a function. (Did you mean .toJS().${methodName}?)`
-  );
-};
-
 class Perspective {
   constructor(data) {
     if (data instanceof Perspective) {
@@ -59,10 +53,6 @@ class Perspective {
     if (value === undefined) return 'undefined';
     if (value === null) return 'null';
     return value.toString();
-  }
-
-  containsArray() {
-    return Array.isArray(this.__data);
   }
 
   // Array methods
@@ -181,15 +171,14 @@ class Perspective {
     return this.__data.push(...values.map(value => new Perspective(value)));
   }
 
-  reduce(reducer) {
-    // we have map, should we have reduce? Should it operate on perspectives or contained values?
-    // map operates on perspectives
-    // if you operate on perspectives you pobably need to return a perspective?
-    losesContext('reduce');
+  reduce(reducer, initialValue) {
+    assertArray(this.__data, 'reduce');
+    return this.__data.reduce(reducer, initialValue);
   }
 
   reduceRight() {
-    losesContext('reduceRight');
+    assertArray(this.__data, 'reduceRight');
+    return this.__data.reduceRight(reducer, initialValue);
   }
 
   reverse() {

@@ -8,5 +8,8 @@
   },
   "author": "Rob Johnstone",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "jest": "^23.6.0"
+  }
 }
