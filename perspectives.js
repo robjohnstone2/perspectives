@@ -55,6 +55,10 @@ class Perspective {
     return value.toString();
   }
 
+  valueOf() {
+    return this.toJS();
+  }
+
   // Array methods
   concat(...values) {
     assertArray(this.__data, 'concat');
@@ -86,7 +90,7 @@ class Perspective {
   filter(predicate) {
     assertArray(this.__data, 'filter');
     return new Perspective(
-      this.__data.filter((elm, i, arr) => predicate(elm.toJS(), i, arr))
+      this.__data.filter((elm, i, arr) => predicate(elm, i, arr))
     );
   }
 
@@ -138,7 +142,7 @@ class Perspective {
 
   keys() {
     // note returns an array rather than a Perspective as there is no context
-    assertArray(this.__data, 'join');
+    assertArray(this.__data, 'keys');
     return this.__data.keys();
   }
 
@@ -176,7 +180,7 @@ class Perspective {
     return this.__data.reduce(reducer, initialValue);
   }
 
-  reduceRight() {
+  reduceRight(reducer, initialValue) {
     assertArray(this.__data, 'reduceRight');
     return this.__data.reduceRight(reducer, initialValue);
   }
@@ -199,7 +203,7 @@ class Perspective {
 
   some(predicate) {
     assertArray(this.__data, 'some');
-    return this.__data.some((elm, i, arr) => predicate(elm.toJS(), i, arr));
+    return this.__data.some((elm, i, arr) => predicate(elm, i, arr));
   }
 
   sort(compareFunction) {
@@ -207,28 +211,31 @@ class Perspective {
     compareFunction =
       compareFunction ||
       ((a, b) => {
-        if (a === undefined && b === undefined) return 0;
-        if (a === undefined) return 1;
-        if (b === undefined) return -1;
+        const aJs = a.toJS();
+        const bJs = b.toJS();
+        if (aJs === undefined && bJs === undefined) return 0;
+        if (aJs === undefined) return 1;
+        if (bJs === undefined) return -1;
         const aString = a.toString();
         const bString = b.toString();
         if (aString < bString) return -1;
         if (aString > bString) return 1;
         return 0;
       });
-    return new Perspective(
-      this.__data.sort((a, b) => compareFunction(a.toJS(), b.toJS()))
-    );
+    return new Perspective(this.__data.sort((a, b) => compareFunction(a, b)));
   }
 
   splice(start, deleteCount, ...items) {
     assertArray(this.__data, 'splice');
     const itemPerspectives = items.map(item => new Perspective(item));
-    return this.__data.splice(start, deleteCount, ...itemPerspectives);
+    return new Perspective(
+      this.__data.splice(start, deleteCount, ...itemPerspectives)
+    );
   }
 
   toLocaleString(...args) {
-    return this.__data.toLocaleString(...args);
+    assertArray(this.__data, 'toLocaleString');
+    return this.toJS().toLocaleString(...args);
   }
 
   unshift(...values) {
