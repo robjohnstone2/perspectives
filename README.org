@@ -1,0 +1,2 @@
+* Perspectives.js
+Manage application state without boilerplate
