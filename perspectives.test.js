@@ -115,7 +115,12 @@ describe('Perspectives', () => {
     });
   });
 
-  describe('Array methods', () => {
+  describe('Array properties and methods', () => {
+    it('should have length property', () => {
+      const store = createStore([1, 2, 3]);
+      expect(store.length).toEqual(3);
+    });
+
     it('should concat arrays', () => {
       const store = createStore([1, 2, 3]);
       expect(store.concat([4, 5, 6]).toJS()).toEqual([1, 2, 3, 4, 5, 6]);
@@ -179,6 +184,8 @@ describe('Perspectives', () => {
       const perspectiveElement = createStore('test');
       const store = createStore([1, 2, perspectiveElement, 3]);
       expect(store.includes(perspectiveElement)).toBe(true);
+      expect(store.includes(perspectiveElement, 2)).toBe(true);
+      expect(store.includes(perspectiveElement, 3)).toBe(false);
       expect(store.toJS()).toEqual([1, 2, 'test', 3]);
     });
 
@@ -193,6 +200,8 @@ describe('Perspectives', () => {
       const store = createStore([1, 2, 3]);
       expect(store.includes(2)).toBe(true);
       expect(store.includes(4)).toBe(false);
+      expect(store.includes(2, 1)).toBe(true);
+      expect(store.includes(2, 2)).toBe(false);
       expect(store.toJS()).toEqual([1, 2, 3]);
     });
 
@@ -200,6 +209,8 @@ describe('Perspectives', () => {
       const perspectiveElement = createStore('test');
       const store = createStore([1, 2, perspectiveElement, 3]);
       expect(store.indexOf(perspectiveElement)).toEqual(2);
+      expect(store.indexOf(perspectiveElement, 2)).toEqual(2);
+      expect(store.indexOf(perspectiveElement, 3)).toEqual(-1);
       expect(store.toJS()).toEqual([1, 2, 'test', 3]);
     });
 
@@ -213,6 +224,9 @@ describe('Perspectives', () => {
     it('should find index of an element using js value', () => {
       const store = createStore([1, 2, 3]);
       expect(store.indexOf(2)).toEqual(1);
+      expect(store.indexOf(4)).toEqual(-1);
+      expect(store.indexOf(2, 1)).toEqual(1);
+      expect(store.indexOf(2, 2)).toEqual(-1);
       expect(store.toJS()).toEqual([1, 2, 3]);
     });
 
@@ -242,6 +256,7 @@ describe('Perspectives', () => {
         3
       ]);
       expect(store.lastIndexOf(perspectiveElement)).toEqual(3);
+      expect(store.lastIndexOf(perspectiveElement, 2)).toEqual(2);
       expect(store.toJS()).toEqual([1, 2, 'test', 'test', 3]);
     });
 
@@ -255,6 +270,7 @@ describe('Perspectives', () => {
     it('should find last index of an element using js value', () => {
       const store = createStore([1, 2, 2, 3]);
       expect(store.lastIndexOf(2)).toEqual(2);
+      expect(store.lastIndexOf(2, 1)).toEqual(1);
       expect(store.toJS()).toEqual([1, 2, 2, 3]);
     });
 
@@ -358,6 +374,179 @@ describe('Perspectives', () => {
         results.push(val.toJS());
       }
       expect(results).toEqual([1, 2, 3]);
+    });
+  });
+
+  describe('String properties and methods', () => {
+    it('should return character at index', () => {
+      const store = createStore('test');
+      expect(store.charAt(1)).toEqual('e');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return charCode at index', () => {
+      const store = createStore('test');
+      expect(store.charCodeAt(1)).toEqual(101);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return codePoint at index', () => {
+      const store = createStore('test');
+      expect(store.codePointAt(1)).toEqual(101);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should concatenate strings', () => {
+      const store = createStore('test');
+      expect(store.concat('ing').toJS()).toEqual('testing');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should check whether a string ends with a particular subString', () => {
+      const store = createStore('test');
+      expect(store.endsWith('st')).toBe(true);
+      expect(store.endsWith('ab')).toBe(false);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should check whether string includes particular subString', () => {
+      const store = createStore('test');
+      expect(store.includes('es')).toBe(true);
+      expect(store.includes('ab')).toBe(false);
+      expect(store.includes('es', 1)).toBe(true);
+      expect(store.includes('es', 2)).toBe(false);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return index of a subString', () => {
+      const store = createStore('test');
+      expect(store.indexOf('es')).toEqual(1);
+      expect(store.indexOf('ab')).toEqual(-1);
+      expect(store.indexOf('es', 1)).toBe(1);
+      expect(store.indexOf('es', 2)).toBe(-1);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return last index of a subString', () => {
+      const store = createStore('test');
+      expect(store.lastIndexOf('t')).toEqual(3);
+      expect(store.lastIndexOf('ab')).toEqual(-1);
+      expect(store.lastIndexOf('t', 3)).toEqual(3);
+      expect(store.lastIndexOf('t', 2)).toEqual(0);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should match regexp', () => {
+      const store = createStore('test');
+      expect(store.match(/[a-z]/g)).toEqual(['t', 'e', 's', 't']);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should normalize string', () => {
+      const store = createStore('\u1E9B\u0323');
+      expect(store.normalize('NFD')).toEqual('\u017F\u0323\u0307');
+      expect(store.toJS()).toEqual('\u1E9B\u0323');
+    });
+
+    it('should pad the end of the string', () => {
+      const store = createStore('test');
+      expect(store.padEnd(8, '!')).toEqual('test!!!!');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should pad the start of the string', () => {
+      const store = createStore('test');
+      expect(store.padStart(8, '!')).toEqual('!!!!test');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should the string', () => {
+      const store = createStore('test');
+      expect(store.repeat(3)).toEqual('testtesttest');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should replace parts of the string', () => {
+      const store = createStore('test');
+      expect(store.replace(/t/g, 'a')).toEqual('aesa');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return index of first match', () => {
+      const store = createStore('test');
+      expect(store.search('s')).toEqual(2);
+      expect(store.search('z')).toEqual(-1);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return a slice of the original string', () => {
+      const store = createStore('test');
+      expect(store.slice(1, 3).toJS()).toEqual('es');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should split the string', () => {
+      const store = createStore('1,2,3,4');
+      expect(store.split(',', 3)).toEqual(['1', '2', '3']);
+      expect(store.toJS()).toEqual('1,2,3,4');
+    });
+
+    it('should determine whether string starts with the specified substring', () => {
+      const store = createStore('test');
+      expect(store.startsWith('te')).toBe(true);
+      expect(store.startsWith('te', 1)).toBe(false);
+      expect(store.startsWith('zz')).toBe(false);
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return a substring', () => {
+      const store = createStore('test');
+      expect(store.substring(1, 3)).toEqual('es');
+      expect(store.toJS()).toEqual('test');
+    });
+
+    it('should return locale appropriate lower case string', () => {
+      const store = createStore('TesT');
+      expect(store.toLocaleLowerCase()).toEqual('test');
+      expect(store.toJS()).toEqual('TesT');
+    });
+
+    it('should return locale appropriate upper case string', () => {
+      const store = createStore('TesT');
+      expect(store.toLocaleUpperCase()).toEqual('TEST');
+      expect(store.toJS()).toEqual('TesT');
+    });
+
+    it('should convert to lower case', () => {
+      const store = createStore('TesT');
+      expect(store.toLowerCase()).toEqual('test');
+      expect(store.toJS()).toEqual('TesT');
+    });
+
+    it('should convert to upper case', () => {
+      const store = createStore('TesT');
+      expect(store.toUpperCase()).toEqual('TEST');
+      expect(store.toJS()).toEqual('TesT');
+    });
+
+    it('should remove whitespace from both ends of the string', () => {
+      const store = createStore('    testing, testing    ');
+      expect(store.trim()).toEqual('testing, testing');
+      expect(store.toJS()).toEqual('    testing, testing    ');
+    });
+
+    it('should remove whitespace from just the end of the string', () => {
+      const store = createStore('    testing, testing    ');
+      expect(store.trimEnd()).toEqual('    testing, testing');
+      expect(store.trimRight()).toEqual('    testing, testing');
+      expect(store.toJS()).toEqual('    testing, testing    ');
+    });
+
+    it('should remove whitespace from just the start of the string', () => {
+      const store = createStore('    testing, testing    ');
+      expect(store.trimStart()).toEqual('testing, testing    ');
+      expect(store.trimLeft()).toEqual('testing, testing    ');
+      expect(store.toJS()).toEqual('    testing, testing    ');
     });
   });
 });
